@@ -21,11 +21,9 @@ const TEMPLATES: MemeTemplate[] = [
 export default function MemeGenerator() {
     const [selectedTemplate, setSelectedTemplate] = useState<string>('4');
     const [textBoxes, setTextBoxes] = useState<TextBox[]>([
-        { id: '1', text: 'Top Text', x: 50, y: 30, fontSize: 42, color: '#FFFFFF', fontFamily: 'Arial', isBold: true, isItalic: false, maxWidth: 500 },
-        { id: '2', text: 'Middle Text', x: 150, y: 260, fontSize: 48, color: '#FFFFFF', fontFamily: 'Arial', isBold: true, isItalic: false, maxWidth: 300 },
-        { id: '3', text: 'Bottom Text', x: 50, y: 530, fontSize: 42, color: '#FFFFFF', fontFamily: 'Arial', isBold: true, isItalic: false, maxWidth: 500 },
+        { id: '1', text: 'Text', x: 50, y: 30, fontSize: 42, color: '#FFFFFF', fontFamily: 'Arial', isBold: true, isItalic: false, maxWidth: 500 },
     ]);
-    const [selectedBoxId, setSelectedBoxId] = useState<string | null>('2');
+    const [selectedBoxId, setSelectedBoxId] = useState<string | null>('1');
     const [dragging, setDragging] = useState<{ id: string; startX: number; startY: number; startBoxX: number; startBoxY: number } | null>(null);
     const canvasRef = useRef<HTMLDivElement>(null);
 
@@ -168,7 +166,7 @@ export default function MemeGenerator() {
             <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Canvas */}
                 <div className="lg:col-span-2">
-                    <div className="bg-white rounded-lg p-4 shadow-lg">
+                    <div className="bg-pink-200 rounded-lg p-4 shadow-lg">
                         <div
                             ref={canvasRef}
                             className="relative inline-block mx-auto bg-black rounded overflow-hidden"
@@ -224,7 +222,10 @@ export default function MemeGenerator() {
                         <div className="mt-6 flex gap-4">
                             <button
                                 onClick={downloadMeme}
-                                className="flex-1 bg-black hover:bg-gray-900 text-white py-3 rounded font-semibold transition"
+                                className="flex-1 text-white py-3 rounded font-semibold transition"
+                                style={{ backgroundColor: '#aa336a' }}
+                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#8b2555'}
+                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#aa336a'}
                             >
                                 📥 Download Meme
                             </button>
