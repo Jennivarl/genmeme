@@ -22,9 +22,10 @@ export default function MemeGenerator() {
     const [selectedTemplate, setSelectedTemplate] = useState<string>('1');
     const [textBoxes, setTextBoxes] = useState<TextBox[]>([
         { id: '1', text: 'Top Text', x: 50, y: 30, fontSize: 42, color: '#FFFFFF', fontFamily: 'Arial', isBold: true, isItalic: false, maxWidth: 500 },
-        { id: '2', text: 'Bottom Text', x: 50, y: 530, fontSize: 42, color: '#FFFFFF', fontFamily: 'Arial', isBold: true, isItalic: false, maxWidth: 500 },
+        { id: '2', text: 'Middle Text', x: 150, y: 260, fontSize: 48, color: '#FFFFFF', fontFamily: 'Arial', isBold: true, isItalic: false, maxWidth: 300 },
+        { id: '3', text: 'Bottom Text', x: 50, y: 530, fontSize: 42, color: '#FFFFFF', fontFamily: 'Arial', isBold: true, isItalic: false, maxWidth: 500 },
     ]);
-    const [selectedBoxId, setSelectedBoxId] = useState<string | null>('1');
+    const [selectedBoxId, setSelectedBoxId] = useState<string | null>('2');
     const [dragging, setDragging] = useState<{ id: string; startX: number; startY: number; startBoxX: number; startBoxY: number } | null>(null);
     const canvasRef = useRef<HTMLDivElement>(null);
 
@@ -64,15 +65,27 @@ export default function MemeGenerator() {
             const canvas = await html2canvas(canvasRef.current, {
                 backgroundColor: null,
                 scale: 2,
+                allowTaint: true,
+                useCORS: true,
             });
 
-            const link = document.createElement('a');
-            link.href = canvas.toDataURL('image/png');
-            link.download = `meme-${Date.now()}.png`;
-            link.click();
+            canvas.toBlob((blob) => {
+                if (!blob) {
+                    alert('Failed to download meme');
+                    return;
+                }
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `genmeme-${Date.now()}.png`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            });
         } catch (error) {
             console.error('Failed to download meme:', error);
-            alert('Failed to download meme');
+            alert('Failed to download meme. Try a simpler image.');
         }
     };
 
@@ -107,17 +120,22 @@ export default function MemeGenerator() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-900 text-white p-6">
+        <div className="min-h-screen bg-purple-100 text-black p-6">
             {/* Header */}
             <header className="max-w-6xl mx-auto mb-8">
-                <h1 className="text-4xl font-bold mb-2">GENMEME</h1>
-                <p className="text-gray-400">Create fun memes instantly</p>
+                <div className="flex items-center gap-3 mb-2">
+                    <img src="/logo.png" alt="GenMeme Logo" className="w-12 h-12" />
+                    <h1 className="text-5xl font-bold" style={{ fontFamily: '"Fredoka One", cursive' }}>
+                        [Gen-meme]
+                    </h1>
+                </div>
+                <p className="text-gray-600">Create fun memes instantly</p>
             </header>
 
             <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Canvas */}
                 <div className="lg:col-span-2">
-                    <div className="bg-gray-800 rounded-lg p-4">
+                    <div className="bg-white rounded-lg p-4 shadow-lg">
                         <div
                             ref={canvasRef}
                             className="relative inline-block mx-auto bg-black rounded overflow-hidden"
@@ -173,7 +191,7 @@ export default function MemeGenerator() {
                         <div className="mt-6 flex gap-4">
                             <button
                                 onClick={downloadMeme}
-                                className="flex-1 bg-blue-600 hover:bg-blue-700 py-3 rounded font-semibold transition"
+                                className="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-3 rounded font-semibold transition"
                             >
                                 📥 Download Meme
                             </button>
@@ -182,14 +200,14 @@ export default function MemeGenerator() {
                 </div>
 
                 {/* Controls */}
-                <div className="bg-gray-800 rounded-lg p-6 h-fit sticky top-6">
+                <div className="bg-white rounded-lg p-6 h-fit sticky top-6 shadow-lg text-black">
                     {/* Template Selector */}
                     <div className="mb-6">
-                        <label className="block text-sm font-semibold mb-2">Choose Template</label>
+                        <label className="block text-sm font-semibold mb-2 text-black">Choose Template</label>
                         <select
                             value={selectedTemplate}
                             onChange={(e) => setSelectedTemplate(e.target.value)}
-                            className="w-full bg-gray-700 text-white p-2 rounded border border-gray-600 focus:border-blue-500"
+                            className="w-full bg-gray-100 text-black p-2 rounded border border-purple-300 focus:border-purple-500"
                         >
                             {TEMPLATES.map((template) => (
                                 <option key={template.id} value={template.id}>
@@ -202,27 +220,27 @@ export default function MemeGenerator() {
                     {/* Text Box Controls */}
                     {selectedBox && (
                         <>
-                            <div className="border-t border-gray-700 pt-6">
-                                <h3 className="text-lg font-semibold mb-4">Edit Text Box #{selectedBox.id}</h3>
+                            <div className="border-t border-purple-200 pt-6">
+                                <h3 className="text-lg font-semibold mb-4 text-black">Edit Text Box #{selectedBox.id}</h3>
 
                                 {/* Text Input */}
                                 <div className="mb-4">
-                                    <label className="block text-sm font-semibold mb-2">Text</label>
+                                    <label className="block text-sm font-semibold mb-2 text-black">Text</label>
                                     <textarea
                                         value={selectedBox.text}
                                         onChange={(e) => updateTextBox(selectedBox.id, { text: e.target.value })}
-                                        className="w-full bg-gray-700 text-white p-2 rounded border border-gray-600 focus:border-blue-500 text-sm"
+                                        className="w-full bg-gray-100 text-black p-2 rounded border border-purple-300 focus:border-purple-500 text-sm"
                                         rows={3}
                                     />
                                 </div>
 
                                 {/* Font Family */}
                                 <div className="mb-4">
-                                    <label className="block text-sm font-semibold mb-2">Font</label>
+                                    <label className="block text-sm font-semibold mb-2 text-black">Font</label>
                                     <select
                                         value={selectedBox.fontFamily}
                                         onChange={(e) => updateTextBox(selectedBox.id, { fontFamily: e.target.value })}
-                                        className="w-full bg-gray-700 text-white p-2 rounded border border-gray-600 focus:border-blue-500 text-sm"
+                                        className="w-full bg-gray-100 text-black p-2 rounded border border-purple-300 focus:border-purple-500 text-sm"
                                     >
                                         <option value="Arial">Arial</option>
                                         <option value="Georgia">Georgia</option>
@@ -235,7 +253,7 @@ export default function MemeGenerator() {
 
                                 {/* Font Size */}
                                 <div className="mb-4">
-                                    <label className="block text-sm font-semibold mb-2">
+                                    <label className="block text-sm font-semibold mb-2 text-black">
                                         Size: {selectedBox.fontSize}px
                                     </label>
                                     <input
@@ -250,15 +268,15 @@ export default function MemeGenerator() {
 
                                 {/* Color */}
                                 <div className="mb-4">
-                                    <label className="block text-sm font-semibold mb-2">Color</label>
+                                    <label className="block text-sm font-semibold mb-2 text-black">Color</label>
                                     <div className="flex gap-2">
                                         <input
                                             type="color"
                                             value={selectedBox.color}
                                             onChange={(e) => updateTextBox(selectedBox.id, { color: e.target.value })}
-                                            className="h-10 w-20 rounded cursor-pointer border border-gray-600"
+                                            className="h-10 w-20 rounded cursor-pointer border border-purple-300"
                                         />
-                                        <span className="flex items-center text-sm">{selectedBox.color}</span>
+                                        <span className="flex items-center text-sm text-black">{selectedBox.color}</span>
                                     </div>
                                 </div>
 
@@ -267,7 +285,7 @@ export default function MemeGenerator() {
                                     <button
                                         onClick={() => updateTextBox(selectedBox.id, { isBold: !selectedBox.isBold })}
                                         className={`flex-1 py-2 px-3 rounded font-bold transition ${
-                                            selectedBox.isBold ? 'bg-blue-600' : 'bg-gray-700 hover:bg-gray-600'
+                                            selectedBox.isBold ? 'bg-purple-600 text-white' : 'bg-gray-200 text-black hover:bg-gray-300'
                                         }`}
                                     >
                                         B
@@ -275,7 +293,7 @@ export default function MemeGenerator() {
                                     <button
                                         onClick={() => updateTextBox(selectedBox.id, { isItalic: !selectedBox.isItalic })}
                                         className={`flex-1 py-2 px-3 rounded font-italic transition ${
-                                            selectedBox.isItalic ? 'bg-blue-600' : 'bg-gray-700 hover:bg-gray-600'
+                                            selectedBox.isItalic ? 'bg-purple-600 text-white' : 'bg-gray-200 text-black hover:bg-gray-300'
                                         }`}
                                     >
                                         <em>I</em>
@@ -286,7 +304,7 @@ export default function MemeGenerator() {
                                 {textBoxes.length > 1 && (
                                     <button
                                         onClick={() => removeTextBox(selectedBox.id)}
-                                        className="w-full bg-red-600 hover:bg-red-700 py-2 rounded font-semibold transition"
+                                        className="w-full bg-red-500 hover:bg-red-600 text-white py-2 rounded font-semibold transition"
                                     >
                                         ✕ Remove Text Box
                                     </button>
@@ -298,7 +316,7 @@ export default function MemeGenerator() {
                     {/* Add Text Box */}
                     <button
                         onClick={addTextBox}
-                        className="w-full mt-4 bg-green-600 hover:bg-green-700 py-2 rounded font-semibold transition"
+                        className="w-full mt-4 bg-purple-600 hover:bg-purple-700 py-2 rounded font-semibold transition text-white"
                     >
                         + Add Text Box
                     </button>
