@@ -76,8 +76,17 @@ export default function MemeGenerator() {
                 ctx.drawImage(templateImg, 0, 0, currentTemplate.width, currentTemplate.height);
 
                 // Draw text boxes with exact positioning
+                // Scale factor: display is 400px, template is 600px, so scale by 1.5
+                const DISPLAY_SIZE = 400;
+                const TEMPLATE_SIZE = 600;
+                const scale = TEMPLATE_SIZE / DISPLAY_SIZE;
+
                 textBoxes.forEach((box) => {
-                    ctx.font = `${box.isBold ? 'bold' : ''} ${box.isItalic ? 'italic' : ''} ${box.fontSize}px ${box.fontFamily}`.trim();
+                    const scaledFontSize = box.fontSize * scale;
+                    const scaledX = box.x * scale;
+                    const scaledY = box.y * scale;
+
+                    ctx.font = `${box.isBold ? 'bold' : ''} ${box.isItalic ? 'italic' : ''} ${scaledFontSize}px ${box.fontFamily}`.trim();
                     ctx.fillStyle = box.color;
                     ctx.textAlign = 'left';
                     ctx.textBaseline = 'top';
@@ -86,13 +95,13 @@ export default function MemeGenerator() {
                     ctx.shadowOffsetX = 2;
                     ctx.shadowOffsetY = 2;
 
-                    // Draw text directly at position with slight offset to match editor rendering
+                    // Draw text directly at scaled position
                     const lines = box.text.split('\n');
-                    let yOffset = box.y + 8; // Add offset to match HTML rendering
-                    
+                    let yOffset = scaledY + 8; // Add offset to match editor rendering
+
                     lines.forEach((line) => {
-                        ctx.fillText(line, box.x, yOffset);
-                        yOffset += box.fontSize + 5;
+                        ctx.fillText(line, scaledX, yOffset);
+                        yOffset += scaledFontSize + 5;
                     });
                 });
 
@@ -217,9 +226,8 @@ export default function MemeGenerator() {
                             {textBoxes.map((box) => (
                                 <div
                                     key={box.id}
-                                    className={`absolute cursor-move p-2 rounded select-none ${
-                                        selectedBoxId === box.id ? 'ring-2 ring-blue-500' : 'hover:ring-2 hover:ring-gray-500'
-                                    }`}
+                                    className={`absolute cursor-move p-2 rounded select-none ${selectedBoxId === box.id ? 'ring-2 ring-blue-500' : 'hover:ring-2 hover:ring-gray-500'
+                                        }`}
                                     style={{
                                         left: `${box.x}px`,
                                         top: `${box.y}px`,
@@ -349,17 +357,15 @@ export default function MemeGenerator() {
                                 <div className="mb-4 flex gap-2">
                                     <button
                                         onClick={() => updateTextBox(selectedBox.id, { isBold: !selectedBox.isBold })}
-                                        className={`flex-1 py-2 px-3 rounded font-bold transition ${
-                                            selectedBox.isBold ? 'bg-pink-500 text-white' : 'bg-pink-300 text-black hover:bg-pink-400'
-                                        }`}
+                                        className={`flex-1 py-2 px-3 rounded font-bold transition ${selectedBox.isBold ? 'bg-pink-500 text-white' : 'bg-pink-300 text-black hover:bg-pink-400'
+                                            }`}
                                     >
                                         B
                                     </button>
                                     <button
                                         onClick={() => updateTextBox(selectedBox.id, { isItalic: !selectedBox.isItalic })}
-                                        className={`flex-1 py-2 px-3 rounded font-italic transition ${
-                                            selectedBox.isItalic ? 'bg-pink-500 text-white' : 'bg-pink-300 text-black hover:bg-pink-400'
-                                        }`}
+                                        className={`flex-1 py-2 px-3 rounded font-italic transition ${selectedBox.isItalic ? 'bg-pink-500 text-white' : 'bg-pink-300 text-black hover:bg-pink-400'
+                                            }`}
                                     >
                                         <em>I</em>
                                     </button>
