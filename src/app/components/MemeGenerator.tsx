@@ -21,7 +21,7 @@ const TEMPLATES: MemeTemplate[] = [
 export default function MemeGenerator() {
     const [selectedTemplate, setSelectedTemplate] = useState<string>('4');
     const [textBoxes, setTextBoxes] = useState<TextBox[]>([
-        { id: '1', text: 'Text', x: 50, y: 30, fontSize: 42, color: '#FFFFFF', fontFamily: 'Arial', isBold: true, isItalic: false, maxWidth: 500 },
+        { id: '1', text: 'Text', x: 50, y: 30, fontSize: 42, color: '#FFFFFF', fontFamily: 'Arial', isBold: true, isItalic: false, maxWidth: 500, rotation: 0 },
     ]);
     const [selectedBoxId, setSelectedBoxId] = useState<string | null>('1');
     const [dragging, setDragging] = useState<{ id: string; startX: number; startY: number; startBoxX: number; startBoxY: number } | null>(null);
@@ -38,6 +38,7 @@ export default function MemeGenerator() {
         const newBox: TextBox = {
             id: Date.now().toString(),
             text: 'New Text',
+            rotation: 0,
             x: 100,
             y: 100,
             fontSize: 32,
@@ -87,6 +88,11 @@ export default function MemeGenerator() {
                     const scaledX = box.x * scale + PADDING;
                     const scaledY = box.y * scale + PADDING;
 
+                    ctx.save();
+                    ctx.translate(scaledX, scaledY);
+                    ctx.rotate((box.rotation * Math.PI) / 180);
+                    ctx.translate(-scaledX, -scaledY);
+
                     ctx.font = `${box.isBold ? 'bold' : ''} ${box.isItalic ? 'italic' : ''} ${scaledFontSize}px ${box.fontFamily}`.trim();
                     ctx.fillStyle = box.color;
                     ctx.textAlign = 'left';
@@ -104,6 +110,8 @@ export default function MemeGenerator() {
                         ctx.fillText(line, scaledX, yOffset);
                         yOffset += scaledFontSize + 5;
                     });
+
+                    ctx.restore();
                 });
 
                 // Download
@@ -233,6 +241,8 @@ export default function MemeGenerator() {
                                         left: `${box.x}px`,
                                         top: `${box.y}px`,
                                         maxWidth: `${box.maxWidth}px`,
+                                        transform: `rotate(${box.rotation}deg)`,
+                                        transformOrigin: 'top left',
                                     }}
                                     onMouseDown={(e) => handleMouseDown(e, box.id)}
                                     onTouchStart={(e) => handleTouchDown(e, box.id)}
@@ -336,6 +346,21 @@ export default function MemeGenerator() {
                                         max="72"
                                         value={selectedBox.fontSize}
                                         onChange={(e) => updateTextBox(selectedBox.id, { fontSize: parseInt(e.target.value) })}
+                                        className="w-full"
+                                    />
+                                </div>
+
+                                {/* Rotation */}
+                                <div className="mb-4">
+                                    <label className="block text-sm font-semibold mb-2 text-black">
+                                        Rotation: {selectedBox.rotation}°
+                                    </label>
+                                    <input
+                                        type="range"
+                                        min="0"
+                                        max="360"
+                                        value={selectedBox.rotation}
+                                        onChange={(e) => updateTextBox(selectedBox.id, { rotation: parseInt(e.target.value) })}
                                         className="w-full"
                                     />
                                 </div>

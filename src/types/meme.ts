@@ -9,6 +9,7 @@ export interface TextBox {
   isBold: boolean;
   isItalic: boolean;
   maxWidth: number;
+  rotation: number;
 }
 
 export interface MemeTemplate {
