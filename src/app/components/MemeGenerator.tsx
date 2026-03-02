@@ -80,11 +80,12 @@ export default function MemeGenerator() {
                 const DISPLAY_SIZE = 400;
                 const TEMPLATE_SIZE = 600;
                 const scale = TEMPLATE_SIZE / DISPLAY_SIZE;
+                const PADDING = 8 * scale; // Account for p-2 padding in HTML (8px at 400px scale)
 
                 textBoxes.forEach((box) => {
                     const scaledFontSize = box.fontSize * scale;
-                    const scaledX = box.x * scale;
-                    const scaledY = box.y * scale;
+                    const scaledX = box.x * scale + PADDING;
+                    const scaledY = box.y * scale + PADDING;
 
                     ctx.font = `${box.isBold ? 'bold' : ''} ${box.isItalic ? 'italic' : ''} ${scaledFontSize}px ${box.fontFamily}`.trim();
                     ctx.fillStyle = box.color;
@@ -97,7 +98,7 @@ export default function MemeGenerator() {
 
                     // Draw text directly at scaled position
                     const lines = box.text.split('\n');
-                    let yOffset = scaledY + 8; // Add offset to match editor rendering
+                    let yOffset = scaledY; // Position already accounts for padding
 
                     lines.forEach((line) => {
                         ctx.fillText(line, scaledX, yOffset);
