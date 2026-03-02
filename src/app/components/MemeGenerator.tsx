@@ -168,7 +168,7 @@ export default function MemeGenerator() {
             <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Canvas */}
                 <div className="lg:col-span-2">
-                    <div className="bg-white rounded-lg p-4 shadow-lg">
+                    <div className="bg-purple-700 rounded-lg p-4 shadow-lg">
                         <div
                             ref={canvasRef}
                             className="relative inline-block mx-auto bg-black rounded overflow-hidden"
@@ -233,10 +233,10 @@ export default function MemeGenerator() {
                 </div>
 
                 {/* Controls */}
-                <div className="bg-white rounded-lg p-6 h-fit sticky top-6 shadow-lg text-black">
+                <div className="bg-purple-700 rounded-lg p-6 h-fit sticky top-6 shadow-lg text-white">
                     {/* Template Selector */}
                     <div className="mb-6">
-                        <label className="block text-sm font-semibold mb-2 text-black">Choose Template</label>
+                        <label className="block text-sm font-semibold mb-2 text-white">Choose Template</label>
                         <select
                             value={selectedTemplate}
                             onChange={(e) => setSelectedTemplate(e.target.value)}
@@ -253,12 +253,12 @@ export default function MemeGenerator() {
                     {/* Text Box Controls */}
                     {selectedBox && (
                         <>
-                            <div className="border-t border-purple-200 pt-6">
-                                <h3 className="text-lg font-semibold mb-4 text-black">Edit Text Box #{selectedBox.id}</h3>
+                            <div className="border-t border-purple-400 pt-6">
+                                <h3 className="text-lg font-semibold mb-4 text-white">Edit Text Box #{selectedBox.id}</h3>
 
                                 {/* Text Input */}
                                 <div className="mb-4">
-                                    <label className="block text-sm font-semibold mb-2 text-black">Text</label>
+                                    <label className="block text-sm font-semibold mb-2 text-white">Text</label>
                                     <textarea
                                         value={selectedBox.text}
                                         onChange={(e) => updateTextBox(selectedBox.id, { text: e.target.value })}
@@ -269,7 +269,7 @@ export default function MemeGenerator() {
 
                                 {/* Font Family */}
                                 <div className="mb-4">
-                                    <label className="block text-sm font-semibold mb-2 text-black">Font</label>
+                                    <label className="block text-sm font-semibold mb-2 text-white">Font</label>
                                     <select
                                         value={selectedBox.fontFamily}
                                         onChange={(e) => updateTextBox(selectedBox.id, { fontFamily: e.target.value })}
