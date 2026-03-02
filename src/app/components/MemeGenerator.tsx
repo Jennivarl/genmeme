@@ -168,7 +168,7 @@ export default function MemeGenerator() {
             <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Canvas */}
                 <div className="lg:col-span-2">
-                    <div className="bg-purple-700 rounded-lg p-4 shadow-lg">
+                    <div className="bg-pink-200 rounded-lg p-4 shadow-lg">
                         <div
                             ref={canvasRef}
                             className="relative inline-block mx-auto bg-black rounded overflow-hidden"
@@ -233,14 +233,14 @@ export default function MemeGenerator() {
                 </div>
 
                 {/* Controls */}
-                <div className="bg-purple-700 rounded-lg p-6 h-fit sticky top-6 shadow-lg text-white">
+                <div className="bg-pink-200 rounded-lg p-6 h-fit sticky top-6 shadow-lg text-black">
                     {/* Template Selector */}
                     <div className="mb-6">
-                        <label className="block text-sm font-semibold mb-2 text-white">Choose Template</label>
+                        <label className="block text-sm font-semibold mb-2 text-black">Choose Template</label>
                         <select
                             value={selectedTemplate}
                             onChange={(e) => setSelectedTemplate(e.target.value)}
-                            className="w-full bg-gray-100 text-black p-2 rounded border border-purple-300 focus:border-purple-500"
+                            className="w-full bg-gray-100 text-black p-2 rounded border border-pink-300 focus:border-pink-500"
                         >
                             {TEMPLATES.map((template) => (
                                 <option key={template.id} value={template.id}>
@@ -253,27 +253,27 @@ export default function MemeGenerator() {
                     {/* Text Box Controls */}
                     {selectedBox && (
                         <>
-                            <div className="border-t border-purple-400 pt-6">
-                                <h3 className="text-lg font-semibold mb-4 text-white">Edit Text Box #{selectedBox.id}</h3>
+                            <div className="border-t border-pink-300 pt-6">
+                                <h3 className="text-lg font-semibold mb-4 text-black">Edit Text Box #{selectedBox.id}</h3>
 
                                 {/* Text Input */}
                                 <div className="mb-4">
-                                    <label className="block text-sm font-semibold mb-2 text-white">Text</label>
+                                    <label className="block text-sm font-semibold mb-2 text-black">Text</label>
                                     <textarea
                                         value={selectedBox.text}
                                         onChange={(e) => updateTextBox(selectedBox.id, { text: e.target.value })}
-                                        className="w-full bg-gray-100 text-black p-2 rounded border border-purple-300 focus:border-purple-500 text-sm"
+                                        className="w-full bg-gray-100 text-black p-2 rounded border border-pink-300 focus:border-pink-500 text-sm"
                                         rows={3}
                                     />
                                 </div>
 
                                 {/* Font Family */}
                                 <div className="mb-4">
-                                    <label className="block text-sm font-semibold mb-2 text-white">Font</label>
+                                    <label className="block text-sm font-semibold mb-2 text-black">Font</label>
                                     <select
                                         value={selectedBox.fontFamily}
                                         onChange={(e) => updateTextBox(selectedBox.id, { fontFamily: e.target.value })}
-                                        className="w-full bg-gray-100 text-black p-2 rounded border border-purple-300 focus:border-purple-500 text-sm"
+                                        className="w-full bg-gray-100 text-black p-2 rounded border border-pink-300 focus:border-pink-500 text-sm"
                                     >
                                         <option value="Arial">Arial</option>
                                         <option value="Georgia">Georgia</option>
@@ -286,7 +286,7 @@ export default function MemeGenerator() {
 
                                 {/* Font Size */}
                                 <div className="mb-4">
-                                    <label className="block text-sm font-semibold mb-2 text-white">
+                                    <label className="block text-sm font-semibold mb-2 text-black">
                                         Size: {selectedBox.fontSize}px
                                     </label>
                                     <input
@@ -301,15 +301,15 @@ export default function MemeGenerator() {
 
                                 {/* Color */}
                                 <div className="mb-4">
-                                    <label className="block text-sm font-semibold mb-2 text-white">Color</label>
+                                    <label className="block text-sm font-semibold mb-2 text-black">Color</label>
                                     <div className="flex gap-2">
                                         <input
                                             type="color"
                                             value={selectedBox.color}
                                             onChange={(e) => updateTextBox(selectedBox.id, { color: e.target.value })}
-                                            className="h-10 w-20 rounded cursor-pointer border border-purple-300"
+                                            className="h-10 w-20 rounded cursor-pointer border border-pink-300"
                                         />
-                                        <span className="flex items-center text-sm text-white">{selectedBox.color}</span>
+                                        <span className="flex items-center text-sm text-black">{selectedBox.color}</span>
                                     </div>
                                 </div>
 
@@ -318,7 +318,7 @@ export default function MemeGenerator() {
                                     <button
                                         onClick={() => updateTextBox(selectedBox.id, { isBold: !selectedBox.isBold })}
                                         className={`flex-1 py-2 px-3 rounded font-bold transition ${
-                                            selectedBox.isBold ? 'bg-purple-600 text-white' : 'bg-purple-500 text-white hover:bg-purple-600'
+                                            selectedBox.isBold ? 'bg-pink-500 text-white' : 'bg-pink-300 text-black hover:bg-pink-400'
                                         }`}
                                     >
                                         B
@@ -326,7 +326,7 @@ export default function MemeGenerator() {
                                     <button
                                         onClick={() => updateTextBox(selectedBox.id, { isItalic: !selectedBox.isItalic })}
                                         className={`flex-1 py-2 px-3 rounded font-italic transition ${
-                                            selectedBox.isItalic ? 'bg-purple-600 text-white' : 'bg-purple-500 text-white hover:bg-purple-600'
+                                            selectedBox.isItalic ? 'bg-pink-500 text-white' : 'bg-pink-300 text-black hover:bg-pink-400'
                                         }`}
                                     >
                                         <em>I</em>
@@ -349,7 +349,7 @@ export default function MemeGenerator() {
                     {/* Add Text Box */}
                     <button
                         onClick={addTextBox}
-                        className="w-full mt-4 bg-purple-600 hover:bg-purple-700 py-2 rounded font-semibold transition text-white"
+                        className="w-full mt-4 bg-pink-500 hover:bg-pink-600 py-2 rounded font-semibold transition text-white"
                     >
                         + Add Text Box
                     </button>
