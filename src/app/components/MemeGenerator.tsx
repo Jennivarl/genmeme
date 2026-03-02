@@ -19,7 +19,7 @@ const TEMPLATES: MemeTemplate[] = [
 ];
 
 export default function MemeGenerator() {
-    const [selectedTemplate, setSelectedTemplate] = useState<string>('1');
+    const [selectedTemplate, setSelectedTemplate] = useState<string>('4');
     const [textBoxes, setTextBoxes] = useState<TextBox[]>([
         { id: '1', text: 'Top Text', x: 50, y: 30, fontSize: 42, color: '#FFFFFF', fontFamily: 'Arial', isBold: true, isItalic: false, maxWidth: 500 },
         { id: '2', text: 'Middle Text', x: 150, y: 260, fontSize: 48, color: '#FFFFFF', fontFamily: 'Arial', isBold: true, isItalic: false, maxWidth: 300 },
@@ -153,22 +153,22 @@ export default function MemeGenerator() {
     };
 
     return (
-        <div className="min-h-screen bg-purple-100 text-black p-6">
+        <div className="min-h-screen text-black p-6" style={{ backgroundColor: '#c11c84' }}>
             {/* Header */}
             <header className="max-w-6xl mx-auto mb-8">
                 <div className="flex items-center gap-3 mb-2">
                     <img src="/logo.jpg" alt="GenMeme Logo" className="w-12 h-12" />
-                    <h1 className="text-5xl font-bold" style={{ fontFamily: '"Fredoka One", cursive' }}>
+                    <h1 className="text-5xl font-bold text-white" style={{ fontFamily: '"Fredoka One", cursive' }}>
                         [Gen-meme]
                     </h1>
                 </div>
-                <p className="text-gray-600">Create fun memes instantly</p>
+                <p className="text-white text-lg italic" style={{ fontFamily: '"Fredoka One", cursive' }}>✨ Unleash Your Meme Magic ✨</p>
             </header>
 
             <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Canvas */}
                 <div className="lg:col-span-2">
-                    <div className="bg-pink-200 rounded-lg p-4 shadow-lg">
+                    <div className="bg-white rounded-lg p-4 shadow-lg">
                         <div
                             ref={canvasRef}
                             className="relative inline-block mx-auto bg-black rounded overflow-hidden"
