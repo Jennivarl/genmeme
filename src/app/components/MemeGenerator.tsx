@@ -77,35 +77,25 @@ export default function MemeGenerator() {
                 // Draw template image
                 ctx.drawImage(templateImg, 0, 0, currentTemplate.width, currentTemplate.height);
 
-                // Draw text boxes
+                // Draw text boxes with exact positioning
                 textBoxes.forEach((box) => {
-                    ctx.font = `${box.isItalic ? 'italic' : ''} ${box.isBold ? 'bold' : ''} ${box.fontSize}px ${box.fontFamily}`.trim();
+                    ctx.font = `${box.isBold ? 'bold' : ''} ${box.isItalic ? 'italic' : ''} ${box.fontSize}px ${box.fontFamily}`.trim();
                     ctx.fillStyle = box.color;
-                    ctx.textAlign = 'center';
+                    ctx.textAlign = 'left';
+                    ctx.textBaseline = 'top';
                     ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
                     ctx.shadowBlur = 4;
                     ctx.shadowOffsetX = 2;
                     ctx.shadowOffsetY = 2;
 
-                    // Draw text with word wrapping
-                    const words = box.text.split(' ');
-                    let line = '';
-                    let y = box.y;
-
-                    words.forEach((word) => {
-                        const testLine = line + (line ? ' ' : '') + word;
-                        const metrics = ctx.measureText(testLine);
-                        if (metrics.width > box.maxWidth && line) {
-                            ctx.fillText(line, box.x + box.maxWidth / 2, y);
-                            line = word;
-                            y += box.fontSize + 5;
-                        } else {
-                            line = testLine;
-                        }
+                    // Draw text directly at position without wrapping to match editor
+                    const lines = box.text.split('\n');
+                    let yOffset = box.y;
+                    
+                    lines.forEach((line) => {
+                        ctx.fillText(line, box.x, yOffset);
+                        yOffset += box.fontSize + 5;
                     });
-                    if (line) {
-                        ctx.fillText(line, box.x + box.maxWidth / 2, y);
-                    }
                 });
 
                 // Download
