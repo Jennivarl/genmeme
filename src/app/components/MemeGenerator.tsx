@@ -141,13 +141,41 @@ export default function MemeGenerator() {
         const deltaY = e.clientY - dragging.startY;
 
         updateTextBox(dragging.id, {
-            x: Math.max(0, Math.min(dragging.startBoxX + deltaX, 500)),
-            y: Math.max(0, Math.min(dragging.startBoxY + deltaY, 550)),
+            x: Math.max(0, Math.min(dragging.startBoxX + deltaX, 330)),
+            y: Math.max(0, Math.min(dragging.startBoxY + deltaY, 365)),
         });
     };
 
     const handleMouseUp = () => {
         setDragging(null);
+    };
+
+    const handleTouchDown = (e: React.TouchEvent, boxId: string) => {
+        setSelectedBoxId(boxId);
+        const box = textBoxes.find((b) => b.id === boxId);
+        if (!box || e.touches.length === 0) return;
+
+        const touch = e.touches[0];
+        setDragging({
+            id: boxId,
+            startX: touch.clientX,
+            startY: touch.clientY,
+            startBoxX: box.x,
+            startBoxY: box.y,
+        });
+    };
+
+    const handleTouchMove = (e: React.TouchEvent) => {
+        if (!dragging || e.touches.length === 0) return;
+
+        const touch = e.touches[0];
+        const deltaX = touch.clientX - dragging.startX;
+        const deltaY = touch.clientY - dragging.startY;
+
+        updateTextBox(dragging.id, {
+            x: Math.max(0, Math.min(dragging.startBoxX + deltaX, 330)),
+            y: Math.max(0, Math.min(dragging.startBoxY + deltaY, 365)),
+        });
     };
 
     return (
@@ -170,10 +198,12 @@ export default function MemeGenerator() {
                         <div
                             ref={canvasRef}
                             className="relative inline-block mx-auto bg-black rounded overflow-hidden"
-                            style={{ width: currentTemplate.width, height: currentTemplate.height }}
+                            style={{ width: '400px', height: '400px' }}
                             onMouseMove={handleMouseMove}
                             onMouseUp={handleMouseUp}
                             onMouseLeave={handleMouseUp}
+                            onTouchMove={handleTouchMove}
+                            onTouchEnd={handleMouseUp}
                         >
                             {/* Template Image */}
                             <img
