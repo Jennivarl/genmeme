@@ -124,7 +124,7 @@ export default function MemeGenerator() {
             {/* Header */}
             <header className="max-w-6xl mx-auto mb-8">
                 <div className="flex items-center gap-3 mb-2">
-                    <img src="/logo.png" alt="GenMeme Logo" className="w-12 h-12" />
+                    <img src="/logo.jpg" alt="GenMeme Logo" className="w-12 h-12" />
                     <h1 className="text-5xl font-bold" style={{ fontFamily: '"Fredoka One", cursive' }}>
                         [Gen-meme]
                     </h1>
