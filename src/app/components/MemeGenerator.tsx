@@ -67,25 +67,21 @@ export default function MemeGenerator() {
                 scale: 2,
                 allowTaint: true,
                 useCORS: true,
+                logging: true,
+                imageTimeout: 3000,
             });
 
-            canvas.toBlob((blob) => {
-                if (!blob) {
-                    alert('Failed to download meme');
-                    return;
-                }
-                const url = URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = `genmeme-${Date.now()}.png`;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                URL.revokeObjectURL(url);
-            });
+            // Use canvas.toDataURL as fallback
+            const dataUrl = canvas.toDataURL('image/png');
+            const link = document.createElement('a');
+            link.href = dataUrl;
+            link.download = `genmeme-${Date.now()}.png`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         } catch (error) {
             console.error('Failed to download meme:', error);
-            alert('Failed to download meme. Try a simpler image.');
+            alert('Failed to download meme. Try refreshing the page and try again.');
         }
     };
 
