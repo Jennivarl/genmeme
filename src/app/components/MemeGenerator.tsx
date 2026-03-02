@@ -21,7 +21,7 @@ const TEMPLATES: MemeTemplate[] = [
 export default function MemeGenerator() {
     const [selectedTemplate, setSelectedTemplate] = useState<string>('4');
     const [textBoxes, setTextBoxes] = useState<TextBox[]>([
-        { id: '1', text: 'Text', x: 50, y: 30, fontSize: 42, color: '#FFFFFF', fontFamily: 'Arial', isBold: true, isItalic: false, maxWidth: 500, rotation: 0 },
+        { id: '1', text: 'Text', x: 50, y: 30, fontSize: 42, color: '#000000', fontFamily: 'Arial', isBold: true, isItalic: false, maxWidth: 500, rotation: 0 },
     ]);
     const [selectedBoxId, setSelectedBoxId] = useState<string | null>('1');
     const [dragging, setDragging] = useState<{ id: string; startX: number; startY: number; startBoxX: number; startBoxY: number } | null>(null);
@@ -42,7 +42,7 @@ export default function MemeGenerator() {
             x: 100,
             y: 100,
             fontSize: 32,
-            color: '#FFFFFF',
+            color: '#000000',
             fontFamily: 'Arial',
             isBold: true,
             isItalic: false,
