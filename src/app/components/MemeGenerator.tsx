@@ -202,11 +202,11 @@ export default function MemeGenerator() {
             <header className="max-w-6xl mx-auto mb-8">
                 <div className="flex items-center gap-3 mb-2">
                     <img src="/logo.jpg" alt="GenMeme Logo" className="w-12 h-12" />
-                    <h1 className="text-5xl font-bold text-white" style={{ fontFamily: '"Fredoka One", cursive' }}>
+                    <h1 className="text-5xl font-bold text-white" style={{ fontFamily: '"Poppins", sans-serif', fontWeight: 700 }}>
                         [Gen-meme]
                     </h1>
                 </div>
-                <p className="text-white text-lg italic" style={{ fontFamily: '"Fredoka One", cursive' }}>✨ Unleash Your Meme Magic ✨</p>
+                <p className="text-white text-lg italic" style={{ fontFamily: '"Poppins", sans-serif', fontWeight: 600 }}>✨ Unleash Your Meme Magic ✨</p>
             </header>
 
             <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
