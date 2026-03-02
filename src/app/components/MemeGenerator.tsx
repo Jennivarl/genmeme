@@ -153,7 +153,7 @@ export default function MemeGenerator() {
     };
 
     return (
-        <div className="min-h-screen text-black p-6" style={{ backgroundColor: '#c11c84' }}>
+        <div className="min-h-screen text-black p-6" style={{ backgroundColor: '#aa336a' }}>
             {/* Header */}
             <header className="max-w-6xl mx-auto mb-8">
                 <div className="flex items-center gap-3 mb-2">
