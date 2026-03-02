@@ -226,6 +226,7 @@ export default function MemeGenerator() {
                                         maxWidth: `${box.maxWidth}px`,
                                     }}
                                     onMouseDown={(e) => handleMouseDown(e, box.id)}
+                                    onTouchStart={(e) => handleTouchDown(e, box.id)}
                                     onClick={() => setSelectedBoxId(box.id)}
                                 >
                                     <div
