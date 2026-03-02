@@ -224,7 +224,7 @@ export default function MemeGenerator() {
                         <div className="mt-6 flex gap-4">
                             <button
                                 onClick={downloadMeme}
-                                className="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-3 rounded font-semibold transition"
+                                className="flex-1 bg-black hover:bg-gray-900 text-white py-3 rounded font-semibold transition"
                             >
                                 📥 Download Meme
                             </button>
@@ -286,7 +286,7 @@ export default function MemeGenerator() {
 
                                 {/* Font Size */}
                                 <div className="mb-4">
-                                    <label className="block text-sm font-semibold mb-2 text-black">
+                                    <label className="block text-sm font-semibold mb-2 text-white">
                                         Size: {selectedBox.fontSize}px
                                     </label>
                                     <input
@@ -301,7 +301,7 @@ export default function MemeGenerator() {
 
                                 {/* Color */}
                                 <div className="mb-4">
-                                    <label className="block text-sm font-semibold mb-2 text-black">Color</label>
+                                    <label className="block text-sm font-semibold mb-2 text-white">Color</label>
                                     <div className="flex gap-2">
                                         <input
                                             type="color"
@@ -309,7 +309,7 @@ export default function MemeGenerator() {
                                             onChange={(e) => updateTextBox(selectedBox.id, { color: e.target.value })}
                                             className="h-10 w-20 rounded cursor-pointer border border-purple-300"
                                         />
-                                        <span className="flex items-center text-sm text-black">{selectedBox.color}</span>
+                                        <span className="flex items-center text-sm text-white">{selectedBox.color}</span>
                                     </div>
                                 </div>
 
@@ -318,7 +318,7 @@ export default function MemeGenerator() {
                                     <button
                                         onClick={() => updateTextBox(selectedBox.id, { isBold: !selectedBox.isBold })}
                                         className={`flex-1 py-2 px-3 rounded font-bold transition ${
-                                            selectedBox.isBold ? 'bg-purple-600 text-white' : 'bg-gray-200 text-black hover:bg-gray-300'
+                                            selectedBox.isBold ? 'bg-purple-600 text-white' : 'bg-purple-500 text-white hover:bg-purple-600'
                                         }`}
                                     >
                                         B
@@ -326,7 +326,7 @@ export default function MemeGenerator() {
                                     <button
                                         onClick={() => updateTextBox(selectedBox.id, { isItalic: !selectedBox.isItalic })}
                                         className={`flex-1 py-2 px-3 rounded font-italic transition ${
-                                            selectedBox.isItalic ? 'bg-purple-600 text-white' : 'bg-gray-200 text-black hover:bg-gray-300'
+                                            selectedBox.isItalic ? 'bg-purple-600 text-white' : 'bg-purple-500 text-white hover:bg-purple-600'
                                         }`}
                                     >
                                         <em>I</em>
