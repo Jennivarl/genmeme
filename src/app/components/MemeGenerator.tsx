@@ -88,9 +88,9 @@ export default function MemeGenerator() {
                     ctx.shadowOffsetX = 2;
                     ctx.shadowOffsetY = 2;
 
-                    // Draw text directly at position without wrapping to match editor
+                    // Draw text directly at position with slight offset to match editor rendering
                     const lines = box.text.split('\n');
-                    let yOffset = box.y;
+                    let yOffset = box.y + 8; // Add offset to match HTML rendering
                     
                     lines.forEach((line) => {
                         ctx.fillText(line, box.x, yOffset);
