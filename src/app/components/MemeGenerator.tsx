@@ -59,29 +59,76 @@ export default function MemeGenerator() {
     };
 
     const downloadMeme = async () => {
-        if (!canvasRef.current) return;
-
         try {
-            const canvas = await html2canvas(canvasRef.current, {
-                backgroundColor: null,
-                scale: 2,
-                allowTaint: true,
-                useCORS: true,
-                logging: true,
-                imageTimeout: 3000,
-            });
+            // Create an actual canvas element
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            if (!ctx) throw new Error('Could not get canvas context');
 
-            // Use canvas.toDataURL as fallback
-            const dataUrl = canvas.toDataURL('image/png');
-            const link = document.createElement('a');
-            link.href = dataUrl;
-            link.download = `genmeme-${Date.now()}.png`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            const templateImg = new Image();
+            templateImg.crossOrigin = 'anonymous';
+            templateImg.src = currentTemplate.image;
+
+            templateImg.onload = () => {
+                // Set canvas size to match template
+                canvas.width = currentTemplate.width;
+                canvas.height = currentTemplate.height;
+
+                // Draw template image
+                ctx.drawImage(templateImg, 0, 0, currentTemplate.width, currentTemplate.height);
+
+                // Draw text boxes
+                textBoxes.forEach((box) => {
+                    ctx.font = `${box.isItalic ? 'italic' : ''} ${box.isBold ? 'bold' : ''} ${box.fontSize}px ${box.fontFamily}`.trim();
+                    ctx.fillStyle = box.color;
+                    ctx.textAlign = 'center';
+                    ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
+                    ctx.shadowBlur = 4;
+                    ctx.shadowOffsetX = 2;
+                    ctx.shadowOffsetY = 2;
+
+                    // Draw text with word wrapping
+                    const words = box.text.split(' ');
+                    let line = '';
+                    let y = box.y;
+
+                    words.forEach((word) => {
+                        const testLine = line + (line ? ' ' : '') + word;
+                        const metrics = ctx.measureText(testLine);
+                        if (metrics.width > box.maxWidth && line) {
+                            ctx.fillText(line, box.x + box.maxWidth / 2, y);
+                            line = word;
+                            y += box.fontSize + 5;
+                        } else {
+                            line = testLine;
+                        }
+                    });
+                    if (line) {
+                        ctx.fillText(line, box.x + box.maxWidth / 2, y);
+                    }
+                });
+
+                // Download
+                canvas.toBlob((blob) => {
+                    if (blob) {
+                        const url = URL.createObjectURL(blob);
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.download = `genmeme-${Date.now()}.png`;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        URL.revokeObjectURL(url);
+                    }
+                });
+            };
+
+            templateImg.onerror = () => {
+                throw new Error('Failed to load template image');
+            };
         } catch (error) {
             console.error('Failed to download meme:', error);
-            alert('Failed to download meme. Try refreshing the page and try again.');
+            alert('Failed to download meme. Check console for details.');
         }
     };
 
