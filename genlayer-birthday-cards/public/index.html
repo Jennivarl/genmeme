@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>GenLayer Birthday Card</title>
+    <style>
+        body {
+            font-family: system-ui, Arial;
+            padding: 24px;
+            background: #0b1220;
+            color: #e6eef8
+        }
+
+        .card {
+            max-width: 920px
+        }
+
+        label {
+            display: block;
+            margin-top: 12px
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 6px;
+            border-radius: 6px;
+            border: 1px solid #223
+        }
+
+        button {
+            margin-top: 12px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            background: #7c3aed;
+            color: white;
+            border: none
+        }
+
+        img.preview {
+            margin-top: 16px;
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.04)
+        }
+    </style>
+</head>
+
+<body>
+    <main class="card">
+        <h1>GenLayer Birthday Card</h1>
+
+        <label>Name
+            <input id="name" value="Friend" />
+        </label>
+
+        <label>Message
+            <input id="message" value="Happy Birthday!" />
+        </label>
+
+        <label>Theme
+            <select id="theme">
+                <option value="default">Default</option>
+                <option value="pastel">Pastel</option>
+                <option value="sunny">Sunny</option>
+            </select>
+        </label>
+
+        <button id="generate">Generate Card</button>
+
+        <div>
+            <img id="preview" class="preview" alt="Birthday preview" />
+        </div>
+    </main>
+
+    <script>
+        const nameEl = document.getElementById('name');
+        const msgEl = document.getElementById('message');
+        const themeEl = document.getElementById('theme');
+        const preview = document.getElementById('preview');
+        const btn = document.getElementById('generate');
+
+        async function generate() {
+            const payload = { name: nameEl.value, message: msgEl.value, theme: themeEl.value };
+            const res = await fetch('/api/birthday', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const svg = await res.text();
+            preview.src = 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+        }
+
+        btn.addEventListener('click', generate);
+        window.addEventListener('load', generate);
+    </script>
+</body>
+
+</html>

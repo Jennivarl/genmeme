@@ -66,3 +66,33 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Birthday Card API
+
+You can generate a simple SVG birthday card from the app with the built-in API route.
+
+- **Endpoint (GET)**: `/api/birthday?name=Name&message=Message&theme=default`
+- **Endpoint (POST)**: `/api/birthday` with JSON body `{ "name": "Name", "message": "Happy Birthday!", "theme": "pastel" }`
+
+Example `fetch` (returns an SVG response):
+
+```js
+// GET example (open in <img src="/api/birthday?name=Alice">)
+fetch('/api/birthday?name=Alice&message=Have%20a%20great%20day')
+	.then(res => res.text())
+	.then(svg => { /* set as img src using data URI or insert into DOM */ });
+
+// POST example
+fetch('/api/birthday', {
+	method: 'POST',
+	headers: { 'Content-Type': 'application/json' },
+	body: JSON.stringify({ name: 'Alice', message: 'Have a great day!', theme: 'pastel' })
+})
+	.then(res => res.text())
+	.then(svg => { /* use svg */ });
+```
+
+Integration notes:
+- If you have the UI at `C:\\Users\\USER\\Downloads\\genlayer-birthday-cards (1)`, copy the UI files into `public/birthday-ui` or update its fetch target to `/api/birthday`.
+- The API returns raw SVG; the front-end can render this by setting an `<img>` src to a data URL (`data:image/svg+xml;utf8,${encodeURIComponent(svg)}`) or inserting the SVG markup into the DOM.
+
