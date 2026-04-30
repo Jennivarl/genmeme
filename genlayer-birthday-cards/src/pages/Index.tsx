@@ -1,5 +1,4 @@
 import { useRef, useState } from "react";
-import { toPng } from "html-to-image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -38,18 +37,190 @@ const Index = () => {
   };
 
   const download = async () => {
-    if (!cardRef.current) return;
     try {
-      const dataUrl = await toPng(cardRef.current, { pixelRatio: 2, cacheBust: true });
+      toast.loading('Generating card…', { id: 'dl' });
+      const dataUrl = await drawCardToCanvas();
       const link = document.createElement('a');
       link.download = `birthday-${name || 'card'}.png`;
       link.href = dataUrl;
       link.click();
-      toast.success('Card downloaded! 🎂');
+      toast.success('Card downloaded! 🎂', { id: 'dl' });
     } catch (err) {
       console.error(err);
-      toast.error("Couldn't export the card.");
+      toast.error("Couldn't export the card.", { id: 'dl' });
     }
+  };
+
+  const loadImg = (src: string): Promise<HTMLImageElement> =>
+    new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = reject;
+      img.src = src;
+    });
+
+  const wrapText = (
+    ctx: CanvasRenderingContext2D,
+    text: string,
+    x: number,
+    startY: number,
+    maxWidth: number,
+    lineHeight: number,
+  ) => {
+    const words = text.split(' ');
+    let line = '';
+    let y = startY;
+    for (const word of words) {
+      const test = line ? `${line} ${word}` : word;
+      if (ctx.measureText(test).width > maxWidth && line) {
+        ctx.fillText(line, x, y);
+        line = word;
+        y += lineHeight;
+      } else {
+        line = test;
+      }
+    }
+    if (line) ctx.fillText(line, x, y);
+  };
+
+  const roundRect = (ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) => {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
+  };
+
+  const drawCardToCanvas = async (): Promise<string> => {
+    const W = 1200;
+    const H = 1500;
+    const canvas = document.createElement('canvas');
+    canvas.width = W;
+    canvas.height = H;
+    const ctx = canvas.getContext('2d')!;
+
+    // Background gradient
+    const grad = ctx.createLinearGradient(0, 0, W, H);
+    grad.addColorStop(0, `hsl(${theme.from})`);
+    grad.addColorStop(0.5, `hsl(${theme.via})`);
+    grad.addColorStop(1, `hsl(${theme.to})`);
+    roundRect(ctx, 0, 0, W, H, 60);
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    // Decorative blobs
+    ctx.save();
+    ctx.globalAlpha = 0.15;
+    ctx.fillStyle = 'white';
+    ctx.beginPath();
+    ctx.arc(W, 0, 220, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
+    ctx.save();
+    ctx.globalAlpha = 0.18;
+    ctx.fillStyle = 'black';
+    ctx.beginPath();
+    ctx.arc(0, H, 240, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
+    // Mochi mascot bottom-right
+    try {
+      const mochi = await loadImg(mochiMascot);
+      const ms = 360;
+      ctx.save();
+      ctx.translate(W + 10, H + 10);
+      ctx.rotate((12 * Math.PI) / 180);
+      ctx.drawImage(mochi, -ms, -ms, ms, ms);
+      ctx.restore();
+    } catch { /* skip */ }
+
+    // "Happy Birthday" badge top-left
+    ctx.save();
+    ctx.fillStyle = 'rgba(255,255,255,0.22)';
+    roundRect(ctx, 60, 60, 340, 64, 32);
+    ctx.fill();
+    ctx.fillStyle = 'white';
+    ctx.font = '500 30px system-ui,sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('🎉 Happy Birthday', 84, 102);
+    ctx.restore();
+
+    // Profile picture
+    const hasPic = !!profilePic;
+    const picCY = 600;
+    if (hasPic && profilePic) {
+      try {
+        const pic = await loadImg(profilePic);
+        const cx = W / 2;
+        const pr = 130;
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(cx, picCY, pr, 0, Math.PI * 2);
+        ctx.clip();
+        ctx.drawImage(pic, cx - pr, picCY - pr, pr * 2, pr * 2);
+        ctx.restore();
+        // border
+        ctx.save();
+        ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+        ctx.lineWidth = 8;
+        ctx.beginPath();
+        ctx.arc(cx, picCY, pr, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+      } catch { /* skip */ }
+    }
+
+    const textTop = hasPic ? 790 : 520;
+
+    // "Hey,"
+    ctx.save();
+    ctx.fillStyle = 'rgba(255,255,255,0.90)';
+    ctx.font = '500 68px Georgia,serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Hey,', W / 2, textTop);
+    ctx.restore();
+
+    // Name
+    ctx.save();
+    ctx.fillStyle = 'white';
+    ctx.font = 'bold 140px system-ui,sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(name || 'Friend', W / 2, textTop + 170, W - 80);
+    ctx.restore();
+
+    // Message
+    ctx.save();
+    ctx.fillStyle = 'rgba(255,255,255,0.95)';
+    ctx.font = '400 42px system-ui,sans-serif';
+    ctx.textAlign = 'center';
+    wrapText(ctx, message, W / 2, textTop + 300, 920, 62);
+    ctx.restore();
+
+    // FROM label
+    ctx.save();
+    ctx.fillStyle = 'rgba(255,255,255,0.70)';
+    ctx.font = '400 24px system-ui,sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('FROM', 80, H - 130);
+    ctx.restore();
+
+    // From name
+    ctx.save();
+    ctx.fillStyle = 'white';
+    ctx.font = '500 56px Georgia,serif';
+    ctx.textAlign = 'left';
+    ctx.fillText(from || 'Your friends', 80, H - 68);
+    ctx.restore();
+
+    return canvas.toDataURL('image/png');
   };
 
   const cardStyle = {
