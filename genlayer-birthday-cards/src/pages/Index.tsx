@@ -153,6 +153,13 @@ const Index = () => {
     ctx.fillText('🎉 Happy Birthday', 84, 102);
     ctx.restore();
 
+    // Cake icon top-right
+    ctx.save();
+    ctx.font = '52px sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('🎂', W - 60, 108);
+    ctx.restore();
+
     // Profile picture
     const hasPic = !!profilePic;
     const picCY = 600;
